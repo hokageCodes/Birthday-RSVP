@@ -1,0 +1,116 @@
+.hero-container {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    background: #701A75;
+  }
+  
+  .hero-content {
+    color: #ffffff;
+    margin-top: 100px;
+  }
+  .hero-content > h1 {
+    font-weight: 800;
+    font-size: 72px;
+    line-height: 110%;
+    text-align: center;
+  }
+  
+  .hero-content > p {
+    margin-top: 20px;
+    max-width: 900px;
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 160%;
+    opacity: 70%;
+    padding: 0 20px; /* Add padding to the sides */
+  }
+  
+  .hero-rsvp-link > button {
+    margin-top: 30px;
+    cursor: pointer;
+    width: 200px;
+    height: 50px;
+    outline: none;
+    border: none;
+    background-color: #fa4a0c;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .hero-rsvp-link > button:hover {
+    background-color: #e63c00;
+  }
+  
+  @media (max-width: 768px) {
+    .hero-container {
+      margin-top: 100px;
+    }
+  
+    .hero-content > h1 {
+      font-size: 48px;
+    }
+  
+    .hero-content > p {
+      font-size: 24px;
+    }
+  
+    .hero-rsvp-link > button {
+      width: 160px;
+      height: 40px;
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+  
+  @media (max-width: 414px) {
+    .hero-container {
+      margin-top: 80px;
+    }
+  
+    .hero-content > h1 {
+      font-size: 40px;
+    }
+  
+    .hero-content > p {
+      font-size: 20px;
+      line-height: 140%;
+    }
+  
+    .hero-rsvp-link > button {
+      width: 140px;
+      height: 36px;
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .hero-container {
+      margin-top: 40px;
+    }
+  
+    .hero-content > h1 {
+      font-size: 36px;
+    }
+  
+    .hero-content > p {
+      font-size: 18px;
+      line-height: 140%;
+      padding: 0 10px; /* Reduce side padding for smaller screens */
+    }
+  
+    .hero-rsvp-link > button {
+      width: 160px;
+      height: 40px;
+      font-size: 16px;
+      line-height: 20px;
+    }
+  }
+  

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/navigation/Navbar";
 import './App.css'
+import SimpleSlider from "./components/carousel/Carousel";
 
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/hero" element={<SimpleSlider />} />
       </Routes>
     </Router>
   );
