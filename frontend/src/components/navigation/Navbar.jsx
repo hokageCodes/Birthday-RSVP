@@ -1,25 +1,75 @@
-import { GiPartyHat } from 'react-icons/gi'
+import React, { useState } from 'react';
+import { FaBars, FaTimes } from 'react-icons/fa';
+// import { GiPartyHat } from 'react-icons/gi';
 import { NavLink } from 'react-router-dom'
-import './navbar.css'
+import './navbar.css';
 
+export default function Navbar() {
+    const [toggleNav, setToggleNav] = useState(false);
 
-function Navbar() {
+    const handleToggleNav = () => {
+        setToggleNav(!toggleNav)
+    }
     return (
-        <nav className='nav-section'>
-            <div className="logo">
-                <GiPartyHat className='logo-icon' />
-                <h3>Celebrate with Us</h3>
-            </div>
-            <ul className="nav-links">
-                <li>Event</li>
-                <li>FAQs</li>
-                <li>Gallery</li>
-            </ul>
+        <nav className="navbar">
+        <div className="navbar__logo">
+            <NavLink
+                className="no-list"
+                exact to="/">
+                    Yomi&amp;Emelda
+            </NavLink>
+        </div>
+        <ul className={toggleNav ? "navbar__list active" : "navbar__list"}>
+            <li className="navbar__item">
+                <NavLink
+                    exact
+                    to="/event"
+                    activeClassName="navbar__item--active"
+                    onClick={handleToggleNav}
+                    className="no-list"
+                >
+                    Event
+                </NavLink>
+            </li>
+            <li className="navbar__item">
+                <NavLink
+                    exact
+                    to="/faqs"
+                    activeClassName="navbar__item--active"
+                    onClick={handleToggleNav}
+                    className="no-list"
+                >
+                    FAQs
+                </NavLink>
+            </li>
+            <li className="navbar__item">
+                <NavLink
+                    exact
+                    to="/gallery"
+                    activeClassName="navbar__item--active"
+                    onClick={handleToggleNav}
+                    className="no-list"
+                >
+                    Gallery
+                </NavLink>
+            </li>
+            {/* <li className="navbar__item">
+                <NavLink
+                    exact
+                    to="/games"
+                    activeClassName="navbar__item--active"
+                    onClick={handleToggleNav}
+                >
+                    FAQs
+                </NavLink>
+            </li> */}
             <div className="rsvp-link">
                 <button>RSVP</button>
             </div>
-        </nav>
+        </ul>
+        <div className="navbar__icon" onClick={handleToggleNav}>
+            {toggleNav ? <FaTimes /> : <FaBars />}
+        </div>
+    </nav>
     )
 }
-
-export default Navbar
