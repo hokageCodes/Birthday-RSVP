@@ -56,16 +56,6 @@ export default function Navbar() {
                             Gallery
                         </NavLink>
                     </li>
-                    {/* <li className="navbar__item">
-                        <NavLink
-                            exact
-                            to="/games"
-                            activeClassName="navbar__item--active"
-                            onClick={handleToggleNav}
-                        >
-                            FAQs
-                        </NavLink>
-                    </li> */}
                     <div className="rsvp-link">
                         <button>RSVP</button>
                     </div>
