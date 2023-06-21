@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const RSVP = require('../models/rsvp');
+const RSVP = require('../models/rsvp.js');
+
 
 // Route for fetching RSVP counts
-router.get('/count', async (req, res) => {
+router.get('/counts', async (req, res) => {
   try {
     const yesCount = await RSVP.countDocuments({ attendance: 'yes' });
     const noCount = await RSVP.countDocuments({ attendance: 'no' });
@@ -21,7 +22,7 @@ router.post('/', async (req, res) => {
     const existingRSVP = await RSVP.findOne({ $or: [{ email }, { phone }] });
 
     if (existingRSVP) {
-      return res.status(400).json({ error: 'You have already RSVPed with this email address.' });
+      return res.status(400).json({ error: 'You have already RSVPed with this email address or phone number.' });
     }
 
     const newRSVP = new RSVP({
@@ -34,10 +35,11 @@ router.post('/', async (req, res) => {
 
     await newRSVP.save();
 
-    res.json({ message: 'Thank you for RSVPing!' });
+    res.json({ message: 'Thank you for RSVPing!', rsvp: newRSVP });
   } catch (error) {
     res.status(500).json({ error: 'Error submitting RSVP' });
   }
 });
+
 
 module.exports = router;

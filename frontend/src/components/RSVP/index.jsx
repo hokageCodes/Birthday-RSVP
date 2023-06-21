@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './rsvp.css';
-// import FormImage from '../../../images/rsvp.png';
 
 function RSVPForm() {
   const [name, setName] = useState('');
@@ -17,48 +16,46 @@ function RSVPForm() {
   useEffect(() => {
     const fetchRSVPCounts = async () => {
       try {
-        const response = await axios.get('/api/rsvp-counts');
+        const response = await axios.get('/api/rsvps/counts');
         setYesCount(response.data.yesCount);
         setNoCount(response.data.noCount);
       } catch (error) {
         console.error('Error fetching RSVP counts:', error);
+        setYesCount(0);
+        setNoCount(0);
       }
     };
+    
 
     fetchRSVPCounts();
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
-      // Check if RSVP already exists with the same email or phone number
-      const response = await axios.get('/api/rsvps', {
-        params: { email, phone },
-      });
-
-      if (response.data.error) {
-        setSuccessMessage('');
-        setErrorMessage(response.data.error);
-        return;
-      }
-
-      // Add RSVP to database
-      await axios.post('/api/rsvps', {
+      const response = await axios.post('/api/rsvps', {
         name,
         phone,
         email,
         attendance,
         additionalInfo,
       });
-
+  
+      // Handle duplicate RSVP error
+      if (response.data.error) {
+        setSuccessMessage('');
+        setErrorMessage(response.data.error);
+        return;
+      }
+  
       // Update the RSVP count
       if (attendance === 'yes') {
         setYesCount((currentCount) => currentCount + 1);
       } else {
         setNoCount((currentCount) => currentCount + 1);
       }
-
+  
       setSuccessMessage('Thank you for RSVPing!');
       setErrorMessage('');
       setName('');
@@ -71,11 +68,11 @@ function RSVPForm() {
       setErrorMessage('Error submitting RSVP: ' + error.message);
     }
   };
+  
 
   return (
     <div className="rsvp_container">
       <div className="left">
-        {/* <img src={FormImage} alt="" /> */}
         <div className="rsvp_count">
           <div className="rsvp-count">
             <p>{yesCount} people will be attending</p>

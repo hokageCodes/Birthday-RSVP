@@ -1,23 +1,22 @@
 import { useState, useEffect } from 'react';
-import { database } from '../../firebase'
+import axios from 'axios';
 
 function RSVPCount() {
   const [yesCount, setYesCount] = useState(0);
   const [noCount, setNoCount] = useState(0);
 
   useEffect(() => {
-    const yesRSVPsRef = database.ref('rsvps').orderByChild('attendance').equalTo('yes');
-    const noRSVPsRef = database.ref('rsvps').orderByChild('attendance').equalTo('no');
+    const fetchRSVPCounts = async () => {
+      try {
+        const response = await axios.get('/api/rsvps/counts');
+        setYesCount(response.data.yesCount);
+        setNoCount(response.data.noCount);
+      } catch (error) {
+        console.error('Error fetching RSVP counts:', error);
+      }
+    };
 
-    // Get count of RSVPs where attendance is "yes"
-    yesRSVPsRef.once('value', (snapshot) => {
-      setYesCount(snapshot.numChildren());
-    });
-
-    // Get count of RSVPs where attendance is "no"
-    noRSVPsRef.once('value', (snapshot) => {
-      setNoCount(snapshot.numChildren());
-    });
+    fetchRSVPCounts();
   }, []);
 
   return (
