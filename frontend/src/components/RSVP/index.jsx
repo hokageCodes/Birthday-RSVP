@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import './rsvp.css';
+import RSVPCount from '../RsvpCount';
 
 function RSVPForm() {
   const [name, setName] = useState('');
@@ -10,27 +11,28 @@ function RSVPForm() {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [yesCount, setYesCount] = useState(0);
+  const [noCount, setNoCount] = useState(0);
 
-  // useEffect(() => {
-  //   const fetchRSVPCounts = async () => {
-  //     try {
-  //       const response = await axios.get('http://localhost:5000/api/rsvps/counts');
-  //       setYesCount(response.data.yesCount);
-  //       setNoCount(response.data.noCount);
-  //     } catch (error) {
-  //       console.error('Error fetching RSVP counts:', error);
-  //       setYesCount(0);
-  //       setNoCount(0);
-  //     }
-  //   };
-    
+  const fetchRSVPCounts = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/rsvps/counts');
+      setYesCount(response.data.countByAttendance.find((item) => item._id === 'yes')?.count || 0);
+      setNoCount(response.data.countByAttendance.find((item) => item._id === 'no')?.count || 0);
+    } catch (error) {
+      console.error('Error fetching RSVP counts:', error);
+      setYesCount(0);
+      setNoCount(0);
+    }
+  };
 
-  //   fetchRSVPCounts();
-  // }, []);
+  useEffect(() => {
+    fetchRSVPCounts();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     try {
       const response = await axios.post('http://localhost:5000/api/rsvps', {
         name,
@@ -39,7 +41,7 @@ function RSVPForm() {
         attendance,
         additionalInfo,
       });
-  
+
       if (response.data.message) {
         setSuccessMessage(response.data.message);
         setErrorMessage('');
@@ -48,6 +50,7 @@ function RSVPForm() {
         setEmail('');
         setAttendance('yes');
         setAdditionalInfo('');
+        fetchRSVPCounts(); // Fetch updated counts
       }
     } catch (error) {
       console.error('Error submitting RSVP:', error);
@@ -60,9 +63,6 @@ function RSVPForm() {
       }
     }
   };
-  
-  
-  
 
   return (
     <div className="rsvp_container">
@@ -123,6 +123,7 @@ function RSVPForm() {
             Submit
           </button>
         </form>
+        <RSVPCount yesCount={yesCount} noCount={noCount} />
       </div>
     </div>
   );

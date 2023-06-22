@@ -2,14 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-
 // Create Express app
 const app = express();
 app.use(cors({
   origin: 'http://localhost:5173'
 }));
-
-
 
 const rsvpRouter = require('./routes/rsvp');
 

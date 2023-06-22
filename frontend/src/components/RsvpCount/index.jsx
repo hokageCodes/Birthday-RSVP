@@ -1,30 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 
-function RSVPCount() {
-  const [yesCount, setYesCount] = useState(0);
-  const [noCount, setNoCount] = useState(0);
+const RSVPCount = ({ yesCount, noCount }) => {
+  const [updatingVote, setUpdatingVote] = useState(false);
 
-  useEffect(() => {
-    const fetchRSVPCounts = async () => {
-      try {
-        const response = await axios.get('/api/rsvps/counts');
-        setYesCount(response.data.yesCount);
-        setNoCount(response.data.noCount);
-      } catch (error) {
-        console.error('Error fetching RSVP counts:', error);
+  const handleVote = async (vote) => {
+    if (updatingVote) {
+      return; // Prevent multiple simultaneous votes
+    }
+
+    setUpdatingVote(true);
+
+    try {
+      await axios.post('http://localhost:5000/api/rsvps/vote', { vote });
+
+      if (vote === 'yes') {
+        setYesCount(yesCount + 1);
+      } else if (vote === 'no') {
+        setNoCount(noCount + 1);
       }
-    };
+    } catch (error) {
+      console.error('Error submitting vote:', error);
+    }
 
-    fetchRSVPCounts();
-  }, []);
+    setUpdatingVote(false);
+  };
 
   return (
-    <div className="rsvp-count">
-      <p>{yesCount} people will be attending</p>
-      <p>{noCount} people will not be attending</p>
+    <div>
+      <h2>RSVP Count</h2>
+      <div>
+        <button disabled={updatingVote} onClick={() => handleVote('yes')}>
+          Yes
+        </button>
+        <span>{yesCount}</span>
+      </div>
+      <div>
+        <button disabled={updatingVote} onClick={() => handleVote('no')}>
+          No
+        </button>
+        <span>{noCount}</span>
+      </div>
     </div>
   );
-}
+};
 
 export default RSVPCount;
