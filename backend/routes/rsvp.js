@@ -1,28 +1,37 @@
 const express = require('express');
 const router = express.Router();
-const RSVP = require('../models/rsvp.js');
-
+const RSVP = require('../models/rsvp');
 
 // Route for fetching RSVP counts
-router.get('/counts', async (req, res) => {
-  try {
-    const yesCount = await RSVP.countDocuments({ attendance: 'yes' });
-    const noCount = await RSVP.countDocuments({ attendance: 'no' });
-    res.json({ yesCount, noCount });
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching RSVP counts' });
-  }
-});
+// router.get('/counts', async (req, res) => {
+//   try {
+//     const yesCount = await RSVP.countDocuments({ attendance: 'yes' });
+//     const noCount = await RSVP.countDocuments({ attendance: 'no' });
+//     res.json({ yesCount, noCount });
+//   } catch (error) {
+//     res.status(500).json({ error: 'Error fetching RSVP counts' });
+//   }
+// });
+
 
 // Route for submitting an RSVP
 router.post('/', async (req, res) => {
   const { name, phone, email, attendance, additionalInfo } = req.body;
 
   try {
-    const existingRSVP = await RSVP.findOne({ $or: [{ email }, { phone }] });
+    const existingEmailRSVP = await RSVP.findOne({ email });
+    const existingPhoneRSVP = await RSVP.findOne({ phone });
 
-    if (existingRSVP) {
-      return res.status(400).json({ error: 'You have already RSVPed with this email address or phone number.' });
+    if (existingEmailRSVP && existingPhoneRSVP) {
+      return res.status(400).json({ message: 'You have already RSVPed with this email address and phone number.' });
+    }
+
+    if (existingEmailRSVP) {
+      return res.status(400).json({ message: 'You have already RSVPed with this email address.' });
+    }
+
+    if (existingPhoneRSVP) {
+      return res.status(400).json({ message: 'You have already RSVPed with this phone number.' });
     }
 
     const newRSVP = new RSVP({
@@ -37,9 +46,11 @@ router.post('/', async (req, res) => {
 
     res.json({ message: 'Thank you for RSVPing!', rsvp: newRSVP });
   } catch (error) {
-    res.status(500).json({ error: 'Error submitting RSVP' });
+    console.error('Error submitting RSVP:', error);
+    res.status(500).json({ error: 'An error occurred while submitting the RSVP.' });
   }
 });
+
 
 
 module.exports = router;

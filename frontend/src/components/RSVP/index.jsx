@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import './rsvp.css';
 
@@ -10,31 +10,29 @@ function RSVPForm() {
   const [additionalInfo, setAdditionalInfo] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [yesCount, setYesCount] = useState(0);
-  const [noCount, setNoCount] = useState(0);
 
-  useEffect(() => {
-    const fetchRSVPCounts = async () => {
-      try {
-        const response = await axios.get('/api/rsvps/counts');
-        setYesCount(response.data.yesCount);
-        setNoCount(response.data.noCount);
-      } catch (error) {
-        console.error('Error fetching RSVP counts:', error);
-        setYesCount(0);
-        setNoCount(0);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchRSVPCounts = async () => {
+  //     try {
+  //       const response = await axios.get('http://localhost:5000/api/rsvps/counts');
+  //       setYesCount(response.data.yesCount);
+  //       setNoCount(response.data.noCount);
+  //     } catch (error) {
+  //       console.error('Error fetching RSVP counts:', error);
+  //       setYesCount(0);
+  //       setNoCount(0);
+  //     }
+  //   };
     
 
-    fetchRSVPCounts();
-  }, []);
+  //   fetchRSVPCounts();
+  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   
     try {
-      const response = await axios.post('/api/rsvps', {
+      const response = await axios.post('http://localhost:5000/api/rsvps', {
         name,
         phone,
         email,
@@ -42,44 +40,32 @@ function RSVPForm() {
         additionalInfo,
       });
   
-      // Handle duplicate RSVP error
-      if (response.data.error) {
-        setSuccessMessage('');
-        setErrorMessage(response.data.error);
-        return;
+      if (response.data.message) {
+        setSuccessMessage(response.data.message);
+        setErrorMessage('');
+        setName('');
+        setPhone('');
+        setEmail('');
+        setAttendance('yes');
+        setAdditionalInfo('');
       }
-  
-      // Update the RSVP count
-      if (attendance === 'yes') {
-        setYesCount((currentCount) => currentCount + 1);
-      } else {
-        setNoCount((currentCount) => currentCount + 1);
-      }
-  
-      setSuccessMessage('Thank you for RSVPing!');
-      setErrorMessage('');
-      setName('');
-      setPhone('');
-      setEmail('');
-      setAttendance('yes');
-      setAdditionalInfo('');
     } catch (error) {
-      setSuccessMessage('');
-      setErrorMessage('Error submitting RSVP: ' + error.message);
+      console.error('Error submitting RSVP:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        setSuccessMessage('');
+        setErrorMessage(error.response.data.message);
+      } else {
+        setSuccessMessage('');
+        setErrorMessage('An error occurred while submitting the RSVP. Please try again later.');
+      }
     }
   };
+  
+  
   
 
   return (
     <div className="rsvp_container">
-      <div className="left">
-        <div className="rsvp_count">
-          <div className="rsvp-count">
-            <p>{yesCount} people will be attending</p>
-            <p>{noCount} people will not be attending</p>
-          </div>
-        </div>
-      </div>
       <div className="right">
         <form id="rsvpform" className="rsvp-form" onSubmit={handleSubmit}>
           <div className="form-header">
